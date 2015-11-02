@@ -1,0 +1,12 @@
+#include <string.h>
+
+#include "news.h"
+
+class parser {
+	
+	struct news news_item;
+
+	public:
+		
+		void parseit();
+ };
