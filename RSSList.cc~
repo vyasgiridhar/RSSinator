@@ -2,16 +2,7 @@
 
 #include "parser.cpp"
 
-void on_treeview_row_activated(const Gtk::TreeModel::Path& path,
-        Gtk::TreeViewColumn* /* column */)
-{
-  Gtk::TreeModel::iterator iter = m_refListStore->get_iter(path);
-  if(iter)
-  {
-    Gtk::TreeModel::Row row = *iter;
-    std::cout << "Row activated: ID=" << row[m_Columns.m_col_number] << std::endl;
-  }
-}
+
 RSSList::RSSList()
 {
 
@@ -21,8 +12,9 @@ RSSList::RSSList()
   /* Create a new scrolled window, with scrollbars only if needed */
   set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
   
-  add(m_TreeView);
-
+  add(m_TreeView);	 
+  
+  
   /* create list store */
   m_refListStore = Gtk::ListStore::create(m_Columns);
 
@@ -32,6 +24,7 @@ RSSList::RSSList()
   
   char u[100];
   Glib::RefPtr<Gdk::Pixbuf> temp;
+    
   
   //Fill the TreeView's model
   for(int i=0;i<News.num_item;i++){
@@ -56,13 +49,29 @@ RSSList::RSSList()
   
     //Connect signal:
   m_TreeView.signal_row_activated().connect(sigc::mem_fun(*this,
-              &on_treeview_row_activated) );
+              &RSSList::on_treeview_row_activated) );
  
 }
+RSSList::type_signal_something RSSList::signal_something()
+{
+  return m_signal_something;
+}
 
+void RSSList::on_treeview_row_activated(const Gtk::TreeModel::Path& path,
+        Gtk::TreeViewColumn* /* column */)
+{
+  Gtk::TreeModel::iterator iter = m_refListStore->get_iter(path);
+  if(iter)
+  {
+    Gtk::TreeModel::Row row = *iter;
+    std::cout << "Row activated: ID=" << row[m_Columns.m_col_number] << std::endl;
+   // emit(x);
+  }
+}
 
+/*void RSSList::emit(int x){
 
-/*Glib::RefPtr<Gtk::TreeSelection> selection = tvPorts->get_selection();
-Gtk::TreeModel::iterator selectedRow = selection->get_selected();
-Gtk::TreeModel::Row row = *selectedRow;
-Glib::ustring port = row.get_value(m_Columns.m_port_name);*/
+	m_signal_something.emit(x);
+	std::cout<<"emitted";
+}
+*/

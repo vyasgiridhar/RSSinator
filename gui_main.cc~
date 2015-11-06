@@ -7,7 +7,6 @@
 
 #include <webkit2/webkit2.h>
 
-
 using namespace std;
 
 gui_main::gui_main()
@@ -19,27 +18,23 @@ gui_main::gui_main()
 {
   set_title("Your RSS's");
   set_border_width(5);
-  set_default_size(get_width()*1000, get_height()*1000);
+  set_default_size(1270,768);
   maximize();
 
   Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default(); 
   int width = screen->get_width(); 
   m_VPaned.set_position(width/2);
-    
-  view = WEBKIT_WEB_VIEW( webkit_web_view_new() );
   
-  /*
-   * the next line does some tricks :
-   * GTK_WIDGET( one ) -> convert WebKitWebView to GtkWidget (one->two)
-   * Glib::wrap( GTK_WIDGET( one ) ) -> convert GtkWidget to Gtk::Widget (two->three)
-   */
-  webview = Glib::wrap( GTK_WIDGET( view ) );
+  
+  web_view = WEBKIT_WEB_VIEW( webkit_web_view_new() ); 
+  webview = Glib::wrap( GTK_WIDGET( (web_view) ) );
+  
+ 
+  webkit_web_view_load_uri(web_view,rsslist.get_news_link(0));
   
   m_VPaned.add1(rsslist);
   m_VPaned.add2(*webview);
-  
-  webkit_web_view_load_html(view,"<!DOCTYPE html><html><head><title>Page Title</title></head><body><h1>This is a Heading</h1><p>This is a paragraph.</p></body></html>",NULL);
-  
+
   m_addbox.pack_start(m_entry, Gtk::PACK_EXPAND_WIDGET);
   m_addbox.pack_start(button,Gtk::PACK_SHRINK);
   m_box.pack_start(m_addbox,Gtk::PACK_SHRINK);
@@ -50,7 +45,7 @@ gui_main::gui_main()
   show_all();
   show_all_children();
   
-
+  rsslist.signal_something().connect(sigc::mem_fun(on_click,&tracker::get_Index) );
 
   show_all_children();
 }

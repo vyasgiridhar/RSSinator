@@ -18,33 +18,34 @@ struct news parseit(){
 	
 	getcwd(cwd,100);
         sprintf(loc,"%s/res/db/title.txt",cwd);
-        cout<<loc;
+        //cout<<loc;
 	f.open(loc);
   	f.seekg(0,ios_base::end);
-  	w = f.tell();
-  	f.seekg(0,ios_base::beg)
+  	w = f.tellg();
+  	f.seekg(0,ios_base::beg);
 	while(f.tellg()!=w){
   	
   		getline(f,x);
         	news_item.title[i] = x;
-  		cout<<x.c_str()<<endl;
+  		//cout<<x.c_str()<<endl;
   		i++;
   	}
         news_item.num_item = i;
   	f.close();
 
  	sprintf(loc,"%s/res/db/link.txt",cwd);
-	cout<<loc;
+	//cout<<loc;
 	f.open(loc);
 	f.seekg(0,ios_base::end);
-  	w = f.tell();
-  	f.seekg(0,ios_base::beg)
+  	w = f.tellg();
+  	f.seekg(0,ios_base::beg);
   	i=0;
 	while(f.tellg()!=w){
   	
   		getline(f,x);
+  		if(i =0)continue;
         	news_item.link[i] = x;
-  		cout<<x.c_str()<<endl;
+  		//cout<<x.c_str()<<endl;
   		i++;
   	}
   
@@ -53,7 +54,7 @@ struct news parseit(){
 	while(i<news_item.num_item){
   	        
   		sprintf(loc,"%s/res/Images/%d.jpg",cwd,i);
-        	cout<<loc;
+        	//cout<<loc;
         	news_item.img_path[i] = loc;
         	
   		i++;

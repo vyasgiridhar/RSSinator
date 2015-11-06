@@ -20,13 +20,19 @@ public:
   };
 
   ModelColumns m_Columns;
+  const char* get_news_link(int index){
+  	std::cout<<News.link[index].c_str();
+  	return News.link[index].c_str();
+  }
+  
+  void Update(struct news);
+  
 
 protected:
-
   news News;
   Glib::RefPtr<Gtk::ListStore> m_refListStore; //The Tree Model.
   Gtk::TreeView m_TreeView; //The Tree View.
-  friend void on_treeview_row_activated(const Gtk::TreeModel::Path& path,
+  void on_treeview_row_activated(const Gtk::TreeModel::Path& path,
         Gtk::TreeViewColumn* /* column */);
 };
 

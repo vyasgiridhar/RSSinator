@@ -1,0 +1,12 @@
+#include <gtkmm.h>
+class gui_main;
+class tracker: sigc::trackable{
+
+	public:
+		
+		int get_Index(Gtk::TreeValueProxy<short int> Index){
+			cout<<Index<<Index<<"     ";
+		}
+		
+                friend void change_webpage(tracker , gui_main);	
+};

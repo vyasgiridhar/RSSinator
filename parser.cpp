@@ -58,7 +58,9 @@ struct news parseit(){
         	
   		i++;
   	}
-  	 	
+  
+   
+
 return news_item;
 
 }
