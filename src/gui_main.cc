@@ -61,9 +61,10 @@ gui_main::gui_main()
   show_all();
   show_all_children();
   monitor_signal();
-  check_first_run();
   std::thread update(update_db,this);
-  update.detach();
+  update.join();
+  check_first_run();
+
 
 }
 

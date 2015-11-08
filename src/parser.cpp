@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-
+#include <algorithm>
 
 using namespace std;
 struct news news_item;
@@ -43,7 +43,6 @@ struct news parseit(){
 	while(f.tellg()!=w){
   	
   		getline(f,x);
-  		if(i =0)continue;
         	news_item.link[i] = x;
   		//cout<<x.c_str()<<endl;
   		i++;
@@ -59,8 +58,14 @@ struct news parseit(){
         	
   		i++;
   	}
-  	 	
+  
+   
+ // reverse(news_item.title,news_item.title+news_item.num_item);
+ // reverse(news_item.link,news_item.link+news_item.num_item);
 return news_item;
+
+
+
 
 }
 

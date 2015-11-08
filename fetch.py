@@ -17,7 +17,6 @@ def download_images():
 	for x in f2:
 		name = "%s.jpg" %i
 		print name
-		print "\n"
 		try:
 			urllib.urlretrieve(x,name)
 		except:
@@ -43,15 +42,16 @@ open(db_title,"a").close()
 open(db_link,"a").close()
 open(db_img,"a").close()
 
+fo = open(db_title,"w")
+f1 = open(db_link,"w")
+f2 = open(db_img,"w")
+
 for line in f:
 	
 	d = feedparser.parse(line)	
 	print d.feed.title
-        print d
 	print "loading."
-	fo = open(db_title,"w")
-	f1 = open(db_link,"w")
-	f2 = open(db_img,"w")
+
 	for post in d.entries:	
    		fo.write((post.title + "\n").encode("UTF-8"))	
    		f1.write((post.link + "\n").encode("UTF-8"))
@@ -59,9 +59,11 @@ for line in f:
 			f2.write((post.media_thumbnail[0]['url'] + "\n").encode("UTF-8"))
 		except:
 			f2.write("no image \n")
-	fo.close()
-	f1.close()
-	f2.close()
+
+
+fo.close()
+f1.close()
+f2.close()	
 	
 os.chdir("..")
 download_images()

@@ -1,2 +1,1 @@
 http://rss.cnn.com/rss/edition.rss
-http://timesofindia.indiatimes.com/rssfeedstopstories.cms
