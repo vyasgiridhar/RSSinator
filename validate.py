@@ -4,4 +4,4 @@ import sys, feedparser
 
 d = feedparser.parse(sys.argv[1])
 
-print d.feed
+print d.feed.title

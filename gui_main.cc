@@ -10,6 +10,15 @@
 
 using namespace std;
 
+
+void gui_main::update(){
+	rsslist.Update();
+}
+void update_db(gui_main *s){
+	cout<<"started Thread";
+	int x = system("python fetch.py");
+	s->update();
+}
 gui_main::gui_main()
 : m_VPaned(Gtk::ORIENTATION_HORIZONTAL),
   m_box(Gtk::ORIENTATION_VERTICAL),
@@ -29,7 +38,7 @@ gui_main::gui_main()
   
   button.signal_clicked().connect( sigc::mem_fun(*this,
               &gui_main::on_add_clicked) );  
-  cout<<"connected";
+ // cout<<"connected";
   WebKitSettings *settings = webkit_settings_new();
   webkit_settings_set_enable_smooth_scrolling(settings,true); 
   web_view = WEBKIT_WEB_VIEW( webkit_web_view_new_with_settings(settings) ); 
@@ -53,6 +62,8 @@ gui_main::gui_main()
   show_all_children();
   monitor_signal();
   check_first_run();
+  std::thread update(update_db,this);
+  update.detach();
 
 }
 
@@ -60,10 +71,11 @@ void gui_main::monitor_signal(){
         Gio::init();
         mainloop = Glib::MainLoop::create();
 		std::string current_dir = Glib::get_current_dir();
+		//current_dir+=".signaled_row";
   		auto dir = Gio::File::create_for_path(current_dir);
  		auto monitor = dir->monitor_directory();
   
-  		std::cout << "Monitoring directory '" << current_dir << "'..."<< std::endl << std::endl;
+  		//std::cout << "Monitoring directory '" << current_dir << "'..."<< std::endl << std::endl;
   		monitor->signal_changed().connect(sigc::mem_fun(*this,&gui_main::on_index_changed));
   
   		mainloop->run();
@@ -75,7 +87,7 @@ void gui_main::on_index_changed(const Glib::RefPtr<Gio::File>& file, const Glib:
   switch(event)
   {
     case Gio::FILE_MONITOR_EVENT_CHANGED:
-      std::cout << "Event: A file is being changed" << std::endl;
+      //std::cout << "Event: A file is being changed" << std::endl;
       ifstream f;
 	  int index;
 	  f.open(".signaled_row");
@@ -89,15 +101,13 @@ gui_main::~gui_main(){
 	 hide();
 }
 
-void update_db(){
-	
-}
+
 void gui_main::on_add_clicked(){
  
   std::ostringstream out;
   int res;
   if(m_entry.get_text().raw().length()==0)
-  	out<<"python validate.py "<<"xys";
+  	out<<"python validate.py "<<"x";
   else{
   	out<<"python validate.py "<<m_entry.get_text().raw();
   }
@@ -122,11 +132,14 @@ void gui_main::on_add_clicked(){
     			{
     			char c[100],loc[100],link[100];
     			getcwd(c,100);
+    			//cout<<c;
     			sprintf(loc,"%s/res/links.txt",c);
       			fstream f;
       			int flag=0;
-       			f.open(loc,ios::in|ios::out);
+       			f.open(loc,ios::in);
+       			cout<<"Checking links";
        			while(f>>link){
+       				
        				if(!strcmp(link,m_entry.get_text().data())){
        						  	cout<<"showing Dialogue";
        						  	Gtk::MessageDialog di(*this, "Url Present");
@@ -135,14 +148,16 @@ void gui_main::on_add_clicked(){
   	 						 	flag = 1;
        				}
        			}
+       			f.close();
        			if(flag == 0){
-       				f.seekp(0,ios::end);
-       				int thus;	
-       				f<<m_entry.get_text().data();
+       				f.open(loc,ios::app);	
+       				f<<m_entry.get_text().data()<<"\n";
+       				f.close();
        				system("cp -r res/ .res/");
        				a:
-       				thus = system("python fetch.py");
-       				if(thus!=0){
+       				thread add_update(update_db,this);
+       				add_update.detach();
+       				if(system("ping -c 3 www.google.com")){
        					Gtk::MessageDialog d(*this, "Network error",false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 	  					d.set_secondary_text("Would you like to retry?");
   	 					int r = d.run();
@@ -150,7 +165,7 @@ void gui_main::on_add_clicked(){
   	 						case(Gtk::RESPONSE_OK):
   	 						goto a;
   	 						case(Gtk::RESPONSE_CANCEL):
-  	 							system("cp -r .res/ res/");
+  	 							break;//system("cp -r .res/ res/");
   	 					}
        					
        				}
@@ -186,8 +201,10 @@ void gui_main::on_button_quit(){
 
 void gui_main::check_first_run(){
 	ifstream f;
-	char w[100];
+	char w[100],cwd[100];
+	getcwd(cwd,100);
 	sprintf(w,"%s/res/links.txt",cwd);
+	//cout<<w;
 	f.open(w);
 	f.seekg(0,ios::end);
 	if(f.tellg()==0){

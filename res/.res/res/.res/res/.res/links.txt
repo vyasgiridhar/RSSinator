@@ -1,0 +1,2 @@
+http://www.forbes.com/feeds/popstories.xml
+http://rss.cnn.com/rss/edition.rss

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-
+#include <algorithm>
 
 using namespace std;
 struct news news_item;
@@ -60,8 +60,12 @@ struct news parseit(){
   	}
   
    
-
+  reverse(news_item.title,news_item.title+news_item.num_item);
+  reverse(news_item.link,news_item.link+news_item.num_item);
 return news_item;
+
+
+
 
 }
 

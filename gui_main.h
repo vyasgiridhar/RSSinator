@@ -14,7 +14,7 @@ class gui_main : public Gtk::Window
 public:
   gui_main();
   virtual ~gui_main();
-  
+  void update();
 protected:
   
   //signal handlers

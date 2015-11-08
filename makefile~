@@ -1,2 +1,7 @@
+LDFLAGS = -lpthread
+CCFLAGS = -std=c++11
+
+
 all:
-	echo x
+	g++ s.cpp  $LDFLAGS $CCFLAGS
+		
