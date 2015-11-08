@@ -30,7 +30,7 @@ ensure_dir("res")
 os.chdir("res")
 
 db_RSS = os.getcwd() +"/links.txt"
-
+open(db_RSS,"a").close()
 f = open(db_RSS,"r")
 
 ensure_dir("db")
@@ -58,8 +58,7 @@ for line in f:
 		try:
 			f2.write((post.media_thumbnail[0]['url'] + "\n").encode("UTF-8"))
 		except:
-			f2.write("no image")
-			continue
+			f2.write("no image \n")
 	fo.close()
 	f1.close()
 	f2.close()

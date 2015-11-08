@@ -6,3 +6,5 @@ all:	RSSList.o
 RSSList.o: RSSList.cc
 	g++ -Wall -g -c RSSList.cc RSSList.h -o RSSList.o $(FLAGS)
 	
+
+

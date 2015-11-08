@@ -99,6 +99,7 @@ void gui_main::on_index_changed(const Glib::RefPtr<Gio::File>& file, const Glib:
 
 gui_main::~gui_main(){
 	 hide();
+	 mainloop->quit();
 }
 
 
@@ -153,7 +154,7 @@ void gui_main::on_add_clicked(){
        				f.open(loc,ios::app);	
        				f<<m_entry.get_text().data()<<"\n";
        				f.close();
-       				system("cp -r res/ .res/");
+       				//system("cp -r res/ .res/");
        				a:
        				thread add_update(update_db,this);
        				add_update.detach();
