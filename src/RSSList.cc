@@ -26,6 +26,10 @@ RSSList::RSSList()
   m_TreeView.append_column("Image",m_Columns.m_col_pixbuf);
   m_TreeView.append_column("Title", m_Columns.m_col_name);
   
+  auto item = Gtk::manage(new Gtk::MenuItem("_Edit", true));
+  item->signal_activate().connect(sigc::mem_fun(*this, &RSSList::on_menu_feed_delete) );
+  m_Menu_Popup.append(*item);
+
   for(guint i = 0; i < 2; i++)
   {
     auto column = m_TreeView.get_column(i);
@@ -76,4 +80,21 @@ void RSSList::Update(){
   row[m_Columns.m_col_number] = i;
   
   }
+}
+
+void RSSList::on_menu_feed_delete(){
+
+  std::cout << "A popup menu item was selected." << std::endl;
+
+  auto refSelection = m_TreeView.get_selection();
+  if(refSelection)
+  {
+    Gtk::TreeModel::iterator iter = refSelection->get_selected();
+    if(iter)
+    {
+      int id = (*iter)[m_Columns.m_col_number];
+      std::cout << "  Selected ID=" << id << std::endl;
+    }
+  }
+
 }

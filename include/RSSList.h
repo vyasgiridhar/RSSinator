@@ -29,6 +29,8 @@ public:
   
 
 protected:
+  void on_menu_feed_delete();
+  Gtk::Menu m_Menu_Popup;
   news News;
   Glib::RefPtr<Gtk::ListStore> m_refListStore; //The Tree Model.
   Gtk::TreeView m_TreeView; //The Tree View.

@@ -8,6 +8,9 @@
 #include <webkit2/webkit2.h>
 #include <thread>
 
+/*#include "examplewindow.h"
+#include "examplewindow.cc"
+*/
 using namespace std;
 
 
@@ -15,7 +18,7 @@ void gui_main::update(){
 	rsslist.Update();
 }
 void update_db(gui_main *s){
-	cout<<"started Thread";
+
 	int x = system("python fetch.py");
 	s->update();
 }
@@ -23,7 +26,8 @@ gui_main::gui_main()
 : m_VPaned(Gtk::ORIENTATION_HORIZONTAL),
   m_box(Gtk::ORIENTATION_VERTICAL),
   m_addbox(Gtk::ORIENTATION_HORIZONTAL),
-  button("Add")	
+  button("Add"),
+  quit("Quit")	
  
 {
   set_title("Your RSS's");
@@ -35,7 +39,30 @@ gui_main::gui_main()
   int width = screen->get_width(); 
   m_VPaned.set_position(width/2);
 
+  Gtk::MenuBar menubar;
+  m_box.pack_start(menubar, Gtk::PACK_SHRINK);
+
+  Gtk::MenuItem menu_edit;
+  menu_edit.set_label("Edit");
+  menubar.append(menu_edit);
+  Gtk::Menu submenuedit;
+  menu_edit.set_submenu(submenuedit);
+
+  Gtk::MenuItem Delete("Delete",true);
+  submenuedit.append(Delete);
+  Delete.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_action_delete_rss));
   
+  Gtk::MenuItem menu_about;
+  menu_about.set_label("Help");
+  menubar.append(menu_about);
+  Gtk::Menu subaboutmenu;
+  menu_about.set_submenu(subaboutmenu);
+  
+  Gtk::MenuItem about("About",true);
+  subaboutmenu.append(about);
+  about.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_action_about));
+
+
   button.signal_clicked().connect( sigc::mem_fun(*this,
               &gui_main::on_add_clicked) );  
  // cout<<"connected";
@@ -54,18 +81,17 @@ gui_main::gui_main()
   m_box.pack_start(m_separator, Gtk::PACK_SHRINK, 12);
   m_box.pack_start(m_VPaned,Gtk::PACK_EXPAND_WIDGET);
 
-  m_box.pack_start(quit_box, Gtk::PACK_SHRINK);
-  quit_box.pack_start(quit,Gtk::PACK_EXPAND_WIDGET);
+  m_box.pack_start(quit_box, Gtk::PACK_SHRINK,10);
+  quit_box.pack_start(quit,Gtk::PACK_SHRINK);
   quit.signal_clicked().connect(sigc::mem_fun(*this, &gui_main::on_button_quit) );
   add(m_box);
   show_all();
   show_all_children();
   monitor_signal();
   std::thread update(update_db,this);
-  update.join();
+  update.detach();
   check_first_run();
-
-
+  
 }
 
 void gui_main::monitor_signal(){
@@ -206,7 +232,7 @@ void gui_main::check_first_run(){
 	char w[100],cwd[100];
 	getcwd(cwd,100);
 	sprintf(w,"%s/res/links.txt",cwd);
-	//cout<<w;
+	//cout<;
 	f.open(w);
 	f.seekg(0,ios::end);
 	if(f.tellg()==0){
@@ -218,3 +244,35 @@ void gui_main::check_first_run(){
     f.close();
 }
 
+void gui_main::on_action_delete_rss(){
+	cout<<"Deletion selected";
+  Gtk::Window win;
+  win.set_title("Your RSS's");;
+  win.set_border_width(5);
+  win.set_default_size(1270,768);
+  Gtk::Button button;
+  win.add(button);
+  win.maximize();
+  win.show();
+
+}
+
+void gui_main::on_action_about(){
+  m_Dialog.set_transient_for(*this);
+
+  m_Dialog.set_program_name("RSS Feed Reader");
+  m_Dialog.set_version("1.0.0.0");
+  m_Dialog.set_copyright("GPL");
+  m_Dialog.set_comments("This is just an RSS Feed reader");
+  m_Dialog.set_license("GPL");
+
+  m_Dialog.set_website("www.amrtianet.edu");
+  m_Dialog.set_website_label("Amrita university");
+
+  std::vector<Glib::ustring> list_authors;
+  list_authors.push_back("Akaash Venugopalan");
+  list_authors.push_back("Vyas Giridharan");
+  list_authors.push_back("Rishi Mathur");
+  m_Dialog.set_authors(list_authors);
+  m_Dialog.show();
+}

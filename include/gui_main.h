@@ -23,8 +23,12 @@ protected:
   void on_add_clicked();
   void on_button_quit();
   void check_first_run();
+  void create_menu();
+  void on_action_delete_rss();
+  void on_action_about();
   
   //child widgets
+  Gtk::AboutDialog m_Dialog;
   Glib::RefPtr<Glib::MainLoop> mainloop;
   Gtk::Button quit;
   Gtk::Box quit_box;
@@ -37,6 +41,8 @@ protected:
   RSSList rsslist;
   Gtk::Widget *webview;
   WebKitWebView *web_view;
+  Glib::RefPtr<Gtk::Builder> m_refBuilder;
+  Glib::RefPtr<Gio::SimpleActionGroup> m_refActionGroup;
 
    
 };
