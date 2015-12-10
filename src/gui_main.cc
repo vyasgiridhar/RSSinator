@@ -7,20 +7,50 @@
 #include <sstream>
 #include <webkit2/webkit2.h>
 #include <thread>
-
+#include <chrono>
 /*#include "examplewindow.h"
 #include "examplewindow.cc"
 */
 using namespace std;
 
 
-void gui_main::update(){
-	rsslist.Update();
+NumberWindow::NumberWindow(): box(Gtk::ORIENTATION_HORIZONTAL),button("Enter")
+{
+    this->set_default_size(500, 100);
+    this->set_title("Set Phone number");
+    box.pack_start(entry,Gtk::PACK_EXPAND_WIDGET);
+    box.pack_start(button,Gtk::PACK_SHRINK);
+    this->add(box);
+    button.signal_clicked().connect( sigc::mem_fun(*this,&NumberWindow::on_add_clicked) );  
+    this->show_all_children();
 }
-void update_db(gui_main *s){
 
-	int x = system("python fetch.py");
-	s->update();
+void NumberWindow::on_add_clicked(){
+
+    if(entry.get_text().raw().length()!=0){
+
+        char cwd[100],loc[100];
+        getcwd(cwd,100);
+        sprintf(loc,"%s/res/pn",cwd);
+        ofstream f(loc);
+        f<<entry.get_text().data();
+        f.close();
+        this->hide();
+
+    }
+}
+
+NumberWindow::~NumberWindow()
+{
+
+}
+bool gui_main::update(int ){
+	rsslist.Update();
+  return true;
+}
+
+void update_db(){
+  system("python fetch.py");
 }
 gui_main::gui_main()
 : m_VPaned(Gtk::ORIENTATION_HORIZONTAL),
@@ -52,6 +82,10 @@ gui_main::gui_main()
   submenuedit.append(Delete);
   Delete.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_action_delete_rss));
   
+  Gtk::MenuItem Number("Add Number",true);
+  submenuedit.append(Number);
+  Number.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_add_number_clicked));
+
   Gtk::MenuItem menu_about;
   menu_about.set_label("Help");
   menubar.append(menu_about);
@@ -80,7 +114,7 @@ gui_main::gui_main()
   m_box.pack_start(m_addbox,Gtk::PACK_SHRINK);
   m_box.pack_start(m_separator, Gtk::PACK_SHRINK, 12);
   m_box.pack_start(m_VPaned,Gtk::PACK_EXPAND_WIDGET);
-
+  numwin = 0;
   m_box.pack_start(quit_box, Gtk::PACK_SHRINK,10);
   quit_box.pack_start(quit,Gtk::PACK_SHRINK);
   quit.signal_clicked().connect(sigc::mem_fun(*this, &gui_main::on_button_quit) );
@@ -88,12 +122,30 @@ gui_main::gui_main()
   show_all();
   show_all_children();
   monitor_signal();
-  std::thread update(update_db,this);
-  update.detach();
+  rsslist.Update();
   check_first_run();
+  std::thread update(update_db);
+  update.detach();
+  my_slot = sigc::bind(sigc::mem_fun(*this,
+              &gui_main::update),1);
+  Glib::signal_timeout().connect(my_slot,5);
+
   
 }
+void gui_main::on_add_number_clicked(){
 
+        if(numwin != 0)
+          return;
+        numwin = new NumberWindow();
+        numwin->signal_hide().connect(sigc::mem_fun(*this, &gui_main::Number_Close));
+        numwin->show();
+
+}
+
+void gui_main::Number_Close(){
+
+    numwin = 0;
+}
 void gui_main::monitor_signal(){
         Gio::init();
         mainloop = Glib::MainLoop::create();
@@ -165,7 +217,6 @@ void gui_main::on_add_clicked(){
       			fstream f;
       			int flag=0;
        			f.open(loc,ios::in);
-       			cout<<"Checking links";
        			while(f>>link){
        				
        				if(!strcmp(link,m_entry.get_text().data())){
@@ -183,10 +234,10 @@ void gui_main::on_add_clicked(){
        				f.close();
        				//system("cp -r res/ .res/");
        				a:
-       				thread add_update(update_db,this);
+       				thread add_update(update_db);
        				add_update.detach();
-       				if(system("ping -c 3 www.google.com")){
-       					Gtk::MessageDialog d(*this, "Network error",false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
+       				if(system("ping -c 1 www.google.com")){
+       				Gtk::MessageDialog d(*this, "Network error",false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 	  					d.set_secondary_text("Would you like to retry?");
   	 					int r = d.run();
   	 					switch(r){
@@ -200,6 +251,7 @@ void gui_main::on_add_clicked(){
        				else{
        					rsslist.Update();	
        				}
+            rsslist.Update();  
 
        			}
 
@@ -240,6 +292,7 @@ void gui_main::check_first_run(){
 		Gtk::MessageDialog dialogue(*this,"No feeds present");
 		dialogue.set_secondary_text("Add a new feed to load the news");
   		dialogue.run();
+      dialogue.hide();  
     }
     f.close();
 }
@@ -253,6 +306,7 @@ void gui_main::on_action_delete_rss(){
   Gtk::Button button;
   win.add(button);
   win.maximize();
+  hide();
   win.show();
 
 }

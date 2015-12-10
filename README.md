@@ -1,3 +1,4 @@
+﻿all
 # RSSinator
 Really simple syndication
 

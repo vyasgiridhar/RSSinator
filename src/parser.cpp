@@ -58,10 +58,7 @@ struct news parseit(){
         	
   		i++;
   	}
-  
-   
- // reverse(news_item.title,news_item.title+news_item.num_item);
- // reverse(news_item.link,news_item.link+news_item.num_item);
+
 return news_item;
 
 

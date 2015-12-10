@@ -49,7 +49,7 @@ void RSSList::on_treeview_row_activated(const Gtk::TreeModel::Path& path,
   if(iter)
   {
     Gtk::TreeModel::Row row = *iter;
-    std::cout << "Row activated: ID=" << row[m_Columns.m_col_number] << std::endl;
+  //  std::cout << "Row activated: ID=" << row[m_Columns.m_col_number] << std::endl;
     ofstream f;
     f.open(".signaled_row");
     f<<row[m_Columns.m_col_number];

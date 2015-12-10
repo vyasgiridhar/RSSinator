@@ -9,12 +9,27 @@
 #include "RSSList.cc"
 #include <webkit2/webkit2.h>
 //#include "click_tracker.cc"
+class NumberWindow : public Gtk::Window
+{
+public:
+    NumberWindow();
+    ~NumberWindow();
+    void on_add_clicked();
+protected:
+    Gtk::Entry entry;
+    Gtk::Button button;
+    Gtk::Box box;
+};
+
+
 class gui_main : public Gtk::Window
 {
 public:
   gui_main();
   virtual ~gui_main();
-  void update();
+  bool update(int);
+  void on_add_number_clicked();
+  void Number_Close();
 protected:
   
   //signal handlers
@@ -26,6 +41,7 @@ protected:
   void create_menu();
   void on_action_delete_rss();
   void on_action_about();
+
   
   //child widgets
   Gtk::AboutDialog m_Dialog;
@@ -43,7 +59,9 @@ protected:
   WebKitWebView *web_view;
   Glib::RefPtr<Gtk::Builder> m_refBuilder;
   Glib::RefPtr<Gio::SimpleActionGroup> m_refActionGroup;
-
+  sigc::slot<bool> my_slot;
+  NumberWindow *numwin;
+  
    
 };
 
