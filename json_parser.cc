@@ -28,46 +28,38 @@ class json_parser{
 		
 		}
 
-		auto get(string desc,int type){
+		decltype(auto) get(string desc,int type);
+};
+decltype(auto) json_parser::get(string desc,int type){
 	try{
 		switch(type){
 
-			case JSON_OBJECT:	{
-								jsonxx::Object ret = (json.get<Object>(desc));
+			case JSON_OBJECT:	
+								(json.get<Object>(desc));
 								return ret;
 								break;
-							}
-			case JSON_ARRAY:	{
-								jsonxx::Array ret = (json.get<Array>(desc));
+			case JSON_ARRAY:
+								auto ret = (json.get<Array>(desc));
 								return ret;
 								break;
-							}
-			case JSON_NUMBER:	{
-								jsonxx::Number ret = (json.get<Number>(desc));
+			case JSON_NUMBER:	(json.get<Number>(desc));
 								return ret;
 								break;
-							}
-			case JSON_BOOL:		{
-								bool ret = (json.get<Boolean>(desc));
+			case JSON_BOOL:		auto ret = (json.get<Boolean>(desc));
 								return ret;
 								break;
-							}
-			case JSON_STR:		{
-								string ret = (json.get<String>(desc));
+			case JSON_STR:		auto ret = (json.get<String>(desc));
 								return ret;
 								break;
-							}
 		}
 		
 	}catch(...){}
-return jsonxx::Object();
+return;
 }
-};
-
 
 int main(){
 	json_parser j("output.json");
-	cout<<j.get("@version",1);
+	cout<<j.get_data("@version",1);
 return 0;
 }
 

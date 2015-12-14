@@ -1,7 +1,5 @@
-﻿all
-# RSSinator
+﻿# RSSinator
 Really simple syndication
-
 A RSS feed reader based on gtkmm
 
 Dependencies:

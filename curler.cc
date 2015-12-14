@@ -2,7 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+#include <string.h>
+using namespace std;
 // callback function writes data to a std::ostream
 static size_t data_write(void* buf, size_t size, size_t nmemb, void* userp)
 {
@@ -41,14 +42,14 @@ CURLcode curl_read(const std::string& url, std::ostream& os, long timeout = 30)
 	return code;
 }
 
-int main()
+int download(string file,string url)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
-
-	std::ofstream ofs("output.html");
-	if(CURLE_OK == curl_read("http://rss.cnn.com/rss/edition.rss", ofs))
+	std::cout<<url<<endl<<file;
+	std::ofstream ofs(file);
+	if(CURLE_OK == curl_read(url, ofs))
 	{
-		// Web page successfully written to file
+			// Web page successfully written to file
 	}
 
 /*	std::ostringstream oss;
