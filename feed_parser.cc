@@ -40,7 +40,7 @@ class feed_parser{
    				 News.title[News.num_item] = item->get<String>("title");
    				 News.img_path[News.num_item] = item->get<Object>("content").get<String>("@url");
    				 News.link[News.num_item] = item->get<String>("link");
-   				 ifstream *f = download(News.title[News.num_item]+".jpg",News.link[News.num_item]);
+   				// ofstream f = download(News.title[News.num_item]+".jpg",News.link[News.num_item]);
    				 std::cout << "\n\n\n\n\n";
 			}	
 
@@ -105,7 +105,6 @@ void feed_parser::create_sql_dump(char* db_name){
 }
 int main(){
 	feed_parser j("output.json");
-	j.create_sql_dump("GOD.db");
 	//cout<<j.get("@version",1);
 return 0;
 }

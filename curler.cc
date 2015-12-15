@@ -11,8 +11,8 @@ static size_t data_write(void* buf, size_t size, size_t nmemb, void* userp)
 	{
 		std::ostream& os = *static_cast<std::ostream*>(userp);
 		std::streamsize len = size * nmemb;
-		if(os.write(static_cast<char*>(buf), len))
-			return len;
+		//if(os.write(static_cast<char*>(buf), len))
+		//	return len;
 	}
 
 	return 0;
@@ -42,7 +42,7 @@ CURLcode curl_read(const std::string& url, std::ostream& os, long timeout = 30)
 	return code;
 }
 
-int download(string file,string url)
+ofstream download(string file,string url)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 	std::cout<<url<<endl<<file;
@@ -60,4 +60,5 @@ int download(string file,string url)
 	}
 */
 	curl_global_cleanup();
+	return ofs;
 }
