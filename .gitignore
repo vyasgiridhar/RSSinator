@@ -1,4 +1,5 @@
 res/
 xml2json.gch
 xml2json.o
-
+a.out
+xml2json
