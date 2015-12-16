@@ -48,7 +48,7 @@ enum Settings {
   // values
   Parser = Permissive,  // permissive or strict parsing
   UnquotedKeys = Disabled, // support of unquoted keys
-  Assertions = Enabled  // enabled or disabled assertions (these asserts work both in DEBUG and RELEASE builds)
+  Assertions = Disabled  // enabled or disabled assertions (these asserts work both in DEBUG and RELEASE builds)
 };
 
 // Constants for .write() and .xml() methods

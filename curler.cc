@@ -42,11 +42,11 @@ CURLcode curl_read(const std::string& url, std::ostream& os, long timeout = 30)
 	return code;
 }
 
-ofstream download(string file,string url)
+void download(string file,string url)
 {
 	curl_global_init(CURL_GLOBAL_ALL);
 	std::cout<<url<<endl<<file;
-	std::ofstream ofs(file);
+	std::ofstream ofs(file,ios::binary);
 	if(CURLE_OK == curl_read(url, ofs))
 	{
 			// Web page successfully written to file
@@ -61,4 +61,17 @@ ofstream download(string file,string url)
 */
 	curl_global_cleanup();
 	return ofs;
+}
+
+string download(string url){
+	curl_global_init(CURL_GLOBAL_ALL);
+	std::ostringstream oss;
+	if(CURLE_OK == curl_read("http://google.com", oss))
+	{
+		// Web page successfully written to string
+		std::string html = oss.str();
+	}
+
+	curl_global_cleanup();
+	return html;
 }

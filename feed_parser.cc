@@ -3,9 +3,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <stdlib.h>
 	#include <sqlite3.h> 
 #include "news.h"
 #include "curler.cc"
+#include <gtkmm.h>
 using namespace std;
 using namespace jsonxx;
 
@@ -20,29 +22,40 @@ class feed_parser{
 
 	public:
 
-		feed_parser(string file){
+		feed_parser(string url){
 			
-			ifstream f(file);
-			data << f.rdbuf();
-			f.close();
-			json.parse(data.str().data());
+			json.parse(download(url));
 			title = json.get<Object>("rss").get<Object>("channel").get<String>("title");
 			link =  json.get<Object>("rss").get<Object>("channel").get<String>("link");
-			desc = json.get<Object>("rss").get<Object>("channel").get<String>("description");
+		    desc = json.get<Object>("rss").get<Object>("channel").get<String>("description");
 			date = json.get<Object>("rss").get<Object>("channel").get<String>("pubDate");
-			logo = json.get<Object>("rss").get<Object>("channel").get<Object>("image").get<String>("url");
 			items = json.get<Object>("rss").get<Object>("channel").get<Array>("item");
-			//cout<<items.get<Object>(0);
-			News.num_item = 1;
+			News.num_item = 0;
 			for (;News.num_item<items.size();News.num_item++){
    				 item = new Object(items.get<Object>(News.num_item));
-   		//	cout<<*item;
-   				 News.title[News.num_item] = item->get<String>("title");
-   				 News.img_path[News.num_item] = item->get<Object>("content").get<String>("@url");
+   				 if(item->has<String>("tile")){
+   				 	News.title[News.num_item] = item->get<String>("tile");
+   				 }
+   				 else{
+   				 	News.title[News.num_item] = item->get<String>("title");
+   				 }
+   				 News.img_path[News.num_item] = item->get<Object>("thumbnail").get<String>("@url");
    				 News.link[News.num_item] = item->get<String>("link");
-   				// ofstream f = download(News.title[News.num_item]+".jpg",News.link[News.num_item]);
+   				 download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
+   				 remove((News.title[News.num_item]+".jpg").c_str());
+   				 try{
+   				 	Glib::init();
+
+   				 	Glib::RefPtr<Gdk::Pixbuf> temp ;
+   				 	temp = Gdk::Pixbuf::create_from_file(News.title[News.num_item]+".jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
+   		         	News.image[News.num_item] = temp;
+   		         }catch(...){}
+   			     
    				 std::cout << "\n\n\n\n\n";
 			}	
+			ofstream of("database.data",ios::binary);
+   			of.write((char*)this,sizeof(*this));
+   			of.close();
 
 		}
 
@@ -104,8 +117,10 @@ void feed_parser::create_sql_dump(char* db_name){
    		   sqlite3_close(db);
 }
 int main(){
+	auto _GTKMain = new Gtk::Main(0, 0, false);
 	feed_parser j("output.json");
 	//cout<<j.get("@version",1);
+	delete _GTKMain;
 return 0;
 }
 
