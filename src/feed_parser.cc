@@ -12,9 +12,8 @@ using namespace jsonxx;
 
 class feed_parser{
 
-	ostringstream data;
 	Object json;
-	string title,link,desc,date,logo;
+	string url,title,link,desc,date,logo;
 	Array items;
 	news News;
 	Object *item;
@@ -26,22 +25,48 @@ class feed_parser{
 		string get_topic(){
 			return title;
 		}		
-
+		bool fetch();
 		bool fetch_data();
+		bool parse();
+		
+		string get_item_title(int index){
+			return News.title[index];
+		}
+		
+		Glib::RefPtr<Gdk::Pixbuf> get_item_img(int index){
+			return News.image[index];
+		}
+
+		string get_item_link(int index){
+			return News.link[index];
+		}
 
 };
-feed_parser::feed_parser(string url){
+bool feed_parser::fetch(){
+
+		string html = download(url);
+		json.parse(html);
 			
-			string html = download(url);
-			cout<<html;
-			json.parse(html);
-			cout<<"Downlaoded";
-			/*title = json.get<Object>("rss").get<Object>("channel").get<String>("title");
+		if(json.has<Object>("rss"))
+			return true;
+		else 
+			return false;
+return false;		
+}
+
+feed_parser::feed_parser(string url){
+		this->url = url;
+}
+
+bool feed_parser::parse(){
+	try{	
+
+			title = json.get<Object>("rss").get<Object>("channel").get<String>("title");
 			link =  json.get<Object>("rss").get<Object>("channel").get<String>("link");
 		    desc = json.get<Object>("rss").get<Object>("channel").get<String>("description");
 			date = json.get<Object>("rss").get<Object>("channel").get<String>("pubDate");
 			items = json.get<Object>("rss").get<Object>("channel").get<Array>("item");
-			*/News.num_item = 0;
+			News.num_item = 0;
 			for (;News.num_item<items.size();News.num_item++){
    				 item = new Object(items.get<Object>(News.num_item));
    				 if(item->has<String>("tile")){
@@ -54,9 +79,13 @@ feed_parser::feed_parser(string url){
    				 News.link[News.num_item] = item->get<String>("link");
    				 download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
 			     
-   			 std::cout << "\n\n\n\n\n";
-		}	
-		
+   				 std::cout << "\n\n\n\n\n";
+			}	
+		}catch(...){
+			return false;
+		}
+
+return true;
 }
 
 bool feed_parser::fetch_data(){
@@ -72,7 +101,7 @@ bool feed_parser::fetch_data(){
    			temp = Gdk::Pixbuf::create_from_file(".backup.jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
    	       	News.image[News.num_item] = temp;
  	    }
-		remove((News.title[News.num_item]+".jpg").c_str());
+		system(("rm " + (News.title[News.num_item]+".jpg")).c_str());
 		ofstream of("database.dat",ios::binary);
 		of.write((char*)this,sizeof(*this));
   		of.close();
@@ -82,5 +111,7 @@ bool feed_parser::fetch_data(){
 }
 
 int main(){
-	feed_parser f("http://rss.cnn.com/rss/edition_football.rss");
+	feed_parser f("");
+	f.fetch();
+	//f.parse();
 }

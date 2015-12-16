@@ -8,9 +8,8 @@
 #include <webkit2/webkit2.h>
 #include <thread>
 #include <chrono>
-/*#include "examplewindow.h"
-#include "examplewindow.cc"
-*/
+#include <feed_parser.cc>
+
 using namespace std;
 
 
@@ -184,20 +183,13 @@ gui_main::~gui_main(){
 
 void gui_main::on_add_clicked(){
  
-  std::ostringstream out;
-  int res;
-  if(m_entry.get_text().raw().length()==0)
-  	out<<"python validate.py "<<"x";
-  else{
-  	out<<"python validate.py "<<m_entry.get_text().raw();
-  }
-  
-  int result =  system(out.str().c_str());
-	if(result!=0){
+  feed_parser feed(m_entry.get_text().raw());
+  int result =  feed.fetch();
+	if(result!=0||m_entry.get_text().raw().length()==0){
 
 	  	Gtk::MessageDialog dialog(*this, "Invalid URL");
 	  	dialog.set_secondary_text("The feed entered could not be recogenized");
-  	  	dialog.run();
+  	  dialog.run();
 	
 	}
 	else{

@@ -12,8 +12,8 @@ static size_t data_write(void* buf, size_t size, size_t nmemb, void* userp)
 	{
 		std::ostream& os = *static_cast<std::ostream*>(userp);
 		std::streamsize len = size * nmemb;
-		//if(os.write(static_cast<char*>(buf), len))
-		//	return len;
+		if(os.write(static_cast<char*>(buf), len))
+			return len;
 	}
 
 	return 0;
@@ -57,7 +57,6 @@ void download(string file,string url)
 }
 
 string download(string url){
-	url = "http://feeds.cookinglight.com/CookingLight/latest";
 	curl_global_init(CURL_GLOBAL_ALL);
 	std::ostringstream oss;
 	std::string html;
@@ -71,8 +70,6 @@ string download(string url){
 		}else{
 			html = oss.str();
 		}
-	}else{
-		cout<<"failed";
 	}
 	curl_global_cleanup();
 	return html;
