@@ -77,7 +77,7 @@ bool feed_parser::parse(){
    				 }
    				 News.img_path[News.num_item] = item->get<Object>("thumbnail").get<String>("@url");
    				 News.link[News.num_item] = item->get<String>("link");
-   				 download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
+   				 //download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
 			     
    				 std::cout << "\n\n\n\n\n";
 			}	
@@ -111,7 +111,7 @@ bool feed_parser::fetch_data(){
 }
 
 int main(){
-	feed_parser f("");
+	feed_parser f("http://rss.cnn.com/rss/edition_football.rss");
 	f.fetch();
-	//f.parse();
+	f.parse();
 }
