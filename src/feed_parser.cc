@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdlib.h>
-#include "news.h"
+//#include "news.h"
 #include "curler.cc"
 #include <gtkmm.h>
 using namespace std;
@@ -108,10 +108,4 @@ bool feed_parser::fetch_data(){
   	}catch(...){
   		return false;
   	}
-}
-
-int main(){
-	feed_parser f("http://rss.cnn.com/rss/edition_football.rss");
-	f.fetch();
-	f.parse();
 }
