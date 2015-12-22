@@ -203,15 +203,17 @@ void gui_main::on_add_clicked(){
     			case(Gtk::RESPONSE_OK):
     			{
     			char c[100],loc[100],link[100];
+    			int count =0;
     			getcwd(c,100);
     			//cout<<c;
-    			sprintf(loc,"%s/res/links.txt",c);
+    			feed_parser fd;
+    			sprintf(loc,"%s/res/database.data",c);
       			fstream f;
       			int flag=0;
-       			f.open(loc,ios::in);
-       			while(f>>link){
+       			f.open(loc,ios::in|ios::binary);
+       			while(f.read((char*)&fd,sizeof(fd))){
        				
-       				if(!strcmp(link,m_entry.get_text().data())){
+       				if(!strcmp(fd.get_url().c_str(),m_entry.get_text().data())){
        						  	cout<<"showing Dialogue";
        						  	Gtk::MessageDialog di(*this, "Url Present");
 	  							di.set_secondary_text("The feed entered already exists");
@@ -221,14 +223,12 @@ void gui_main::on_add_clicked(){
        			}
        			f.close();
        			if(flag == 0){
-       				f.open(loc,ios::app);	
-       				f<<m_entry.get_text().data()<<"\n";
+       				f.open(loc,ios::app,ios::binary);
+       				feed.fetch_data();	
+       				f.write((char*)&feed,sizeof(feed));
        				f.close();
-       				//system("cp -r res/ .res/");
        				a:
-       				thread add_update(update_db);
-       				add_update.detach();
-       				if(system("ping -c 1 www.google.com")){
+       				if(!download("www.google.com").length()){
        				Gtk::MessageDialog d(*this, "Network error",false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 	  					d.set_secondary_text("Would you like to retry?");
   	 					int r = d.run();
@@ -236,7 +236,7 @@ void gui_main::on_add_clicked(){
   	 						case(Gtk::RESPONSE_OK):
   	 						goto a;
   	 						case(Gtk::RESPONSE_CANCEL):
-  	 							break;//system("cp -r .res/ res/");
+  	 							break;
   	 					}
        					
        				}
