@@ -1,5 +1,5 @@
 RM = rm -f
-CSTD = -std=c++11
+CSTD = -std=c++14
 GTKMM_FLAGS = `pkg-config gtkmm-3.0 --cflags --libs`
 WEBKIT_FLAGS = `pkg-config webkit2gtk-4.0 --libs --cflags`
 CFLAGS = -lpthread

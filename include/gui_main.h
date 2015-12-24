@@ -8,7 +8,7 @@
 #include "RSSList.h"
 #include "RSSList.cc"
 #include <webkit2/webkit2.h>
-//#include "click_tracker.cc"
+
 class NumberWindow : public Gtk::Window
 {
 public:
