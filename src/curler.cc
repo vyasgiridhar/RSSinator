@@ -67,7 +67,7 @@ string download(string url){
 			html = oss.str();
 		}
 		curl_global_cleanup();
-		cout<<html;
+		
 		return html;
 	}
 	curl_global_cleanup();

@@ -47,9 +47,8 @@ class feed_parser{
 };
 bool feed_parser::fetch(){
 
-		string html = download(url);
-		json.parse(html);
-			
+		json.parse(download(url));
+		cout<<"@JSON";
 		if(json.has<Object>("rss"))
 			return true;
 		else 
@@ -80,7 +79,6 @@ bool feed_parser::parse(){
    				 }
    				 News.img_path[News.num_item] = item->get<Object>("thumbnail").get<String>("@url");
    				 News.link[News.num_item] = item->get<String>("link");
-   				 //download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
 			     
    				 std::cout << "\n\n\n\n\n";
 			}	

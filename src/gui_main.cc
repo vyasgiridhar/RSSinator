@@ -203,15 +203,17 @@ void gui_main::on_add_clicked(){
   			{
     			case(Gtk::RESPONSE_OK):
     			{
-    			char c[100],loc[100],link[100];
+    			char c[100],loc[100];
     			int count =0;
     			getcwd(c,100);
-    			//cout<<c;
+    			cout<<c;
     			feed_parser fd;
     			sprintf(loc,"%s/res/database.data",c);
       			fstream f;
       			int flag=0;
-       			f.open(loc,ios::in|ios::binary);
+      			cout<<"Opened LOC";
+       			/*f.open(loc,ios::in|ios::binary);
+       			if(!f){
        			while(f.read((char*)&fd,sizeof(fd))){
        				
        				if(!strcmp(fd.get_url().c_str(),m_entry.get_text().data())){
@@ -222,11 +224,12 @@ void gui_main::on_add_clicked(){
   	 						 	flag = 1;
        				}
        			}
-       			f.close();
+       			}
+       			f.close();*/
        			if(flag == 0){
        				f.open(loc,ios::app|ios::binary);
        				feed.fetch_data();	
-       				f.write((char*)&feed,sizeof(feed));
+       				//	f.write((char*)&feed,sizeof(feed));
        				f.close();
        				a:
        				if(!download("www.google.com").length()){
@@ -279,7 +282,7 @@ void gui_main::check_first_run(){
 	sprintf(w,"%s/res/database.data",cwd);
 	f.open(w,ios::binary);
 	f.seekg(0,ios::end);
-	if(f.tellg()==0){
+	if(f.tellg()==0){	
 		f.close();
 		Gtk::MessageDialog dialogue(*this,"No feeds present");
 		dialogue.set_secondary_text("Add a new feed to load the news");
