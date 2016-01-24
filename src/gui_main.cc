@@ -157,7 +157,7 @@ void gui_main::monitor_signal(){
   		//std::cout << "Monitoring directory '" << current_dir << "'..."<< std::endl << std::endl;
   		monitor->signal_changed().connect(sigc::mem_fun(*this,&gui_main::on_index_changed));
   
-  		mainloop->run();
+  		//mainloop->run();
 }
 
 
@@ -186,7 +186,7 @@ void gui_main::on_add_clicked(){
  
   feed_parser feed(m_entry.get_text().raw());
   int result =  feed.fetch();
-	if(result==0||m_entry.get_text().raw().length()==0){
+	if(result==0&&m_entry.get_text().raw().length()==0&&0){
 
 	  	Gtk::MessageDialog dialog(*this, "Invalid URL");
 	  	dialog.set_secondary_text("The feed entered could not be recogenized");
@@ -206,13 +206,11 @@ void gui_main::on_add_clicked(){
     			char c[100],loc[100];
     			int count =0;
     			getcwd(c,100);
-    			cout<<c;
     			feed_parser fd;
     			sprintf(loc,"%s/res/database.data",c);
       			fstream f;
-      			int flag=0;
-      			cout<<"Opened LOC";
-       			/*f.open(loc,ios::in|ios::binary);
+      			int flag = 0;
+       			f.open(loc,ios::in|ios::binary);
        			if(!f){
        			while(f.read((char*)&fd,sizeof(fd))){
        				
@@ -225,12 +223,13 @@ void gui_main::on_add_clicked(){
        				}
        			}
        			}
-       			f.close();*/
+       			f.close();
        			if(flag == 0){
-       				f.open(loc,ios::app|ios::binary);
+       				//f.open(loc,ios::app|ios::binary);
+       				feed.parse();
        				feed.fetch_data();	
-       				//	f.write((char*)&feed,sizeof(feed));
-       				f.close();
+       				//f.write((char*)&feed,sizeof(feed));
+       				//f.close();
        				a:
        				if(!download("www.google.com").length()){
        				Gtk::MessageDialog d(*this, "Network error",false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);

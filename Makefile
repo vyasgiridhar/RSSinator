@@ -15,7 +15,7 @@ MAIN = $(ROOT_DIR)/src/main.cc
 
 
 all:  
-	g++ $(INCLUDE_H) $(INCLUDE_CC) $(MAIN) -o FeedReader $(CSTD) $(GTKMM_FLAGS) $(WEBKIT_FLAGS) $(CURL_FLAGS) $(CFLAGS)
+	g++ $(INCLUDE_H) $(INCLUDE_CC) $(MAIN) -o FeedReader -g $(CSTD) $(GTKMM_FLAGS) $(WEBKIT_FLAGS) $(CURL_FLAGS) $(CFLAGS)
 	
 run:
 	./FeedReader

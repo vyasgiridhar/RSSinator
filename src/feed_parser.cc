@@ -8,6 +8,7 @@
 #include "curler.cc"
 #include <gtkmm.h>
 #include <thread>
+#include <stdio.h>
 using namespace std;
 using namespace jsonxx;
 
@@ -90,6 +91,7 @@ return true;
 }
 
 bool feed_parser::fetch_data(){
+	cout<<"Fetching images baby";
 	try{
 		download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
      	try{
@@ -102,8 +104,9 @@ bool feed_parser::fetch_data(){
    			temp = Gdk::Pixbuf::create_from_file(".backup.jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
    	       	News.image[News.num_item] = temp;
  	    }
-		system(("rm " + (News.title[News.num_item]+".jpg")).c_str());
+		remove((News.title[News.num_item]+".jpg")).c_str());
 		ofstream of("database.dat",ios::binary);
+		cout<<this->title;
 		of.write((char*)this,sizeof(*this));
   		of.close();
   	}catch(...){
