@@ -63,7 +63,11 @@ void RSSList::Update(){
   
   char u[100];
   Glib::RefPtr<Gdk::Pixbuf> temp;
-  
+  while(f.read((char*)&fd,sizeof(fd))){
+              
+        
+    }
+  }
   //Fill the TreeView's model
   for(int i=0;i<News.num_item;i++){
   Gtk::TreeModel::Row row = *(m_refListStore->append());

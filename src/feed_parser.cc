@@ -80,8 +80,6 @@ bool feed_parser::parse(){
    				 }
    				 News.img_path[News.num_item] = item->get<Object>("thumbnail").get<String>("@url");
    				 News.link[News.num_item] = item->get<String>("link");
-			     
-   				 std::cout << "\n\n\n\n\n";
 			}	
 		}catch(...){
 			return false;
@@ -104,7 +102,7 @@ bool feed_parser::fetch_data(){
    			temp = Gdk::Pixbuf::create_from_file(".backup.jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
    	       	News.image[News.num_item] = temp;
  	    }
-		remove((News.title[News.num_item]+".jpg")).c_str());
+		remove(((News.title[News.num_item]+".jpg")).c_str());
 		ofstream of("database.dat",ios::binary);
 		cout<<this->title;
 		of.write((char*)this,sizeof(*this));

@@ -225,11 +225,11 @@ void gui_main::on_add_clicked(){
        			}
        			f.close();
        			if(flag == 0){
-       				//f.open(loc,ios::app|ios::binary);
+       				f.open(loc,ios::app|ios::binary);
        				feed.parse();
        				feed.fetch_data();	
-       				//f.write((char*)&feed,sizeof(feed));
-       				//f.close();
+       				f.write((char*)&feed,sizeof(feed));
+       				f.close();
        				a:
        				if(!download("www.google.com").length()){
        				Gtk::MessageDialog d(*this, "Network error",false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
