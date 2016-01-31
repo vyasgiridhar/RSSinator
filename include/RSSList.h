@@ -1,7 +1,8 @@
 
 
 #include <gtkmm.h>
-#include "news.h"
+
+
 class RSSList: public Gtk::ScrolledWindow
 {
 public:

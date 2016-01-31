@@ -5,6 +5,8 @@
 #include <gtkmm.h>
 #include <giomm.h>
 #include <string.h>
+#include <feed_parser.h>
+#include <feed_parser.cc>
 #include "RSSList.h"
 #include "RSSList.cc"
 #include <webkit2/webkit2.h>
@@ -61,7 +63,7 @@ protected:
   Glib::RefPtr<Gio::SimpleActionGroup> m_refActionGroup;
   sigc::slot<bool> my_slot;
   NumberWindow *numwin;
-  
+  feed_parser feed;
    
 };
 

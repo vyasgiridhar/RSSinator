@@ -8,8 +8,6 @@
 #include <webkit2/webkit2.h>
 #include <thread>
 #include <chrono>
-#include <feed_parser.cc>
-
 using namespace std;
 
 
@@ -122,7 +120,7 @@ gui_main::gui_main()
   show_all();
   show_all_children();
   monitor_signal();
-  rsslist.Update();
+//  rsslist.Update();
   check_first_run();
   std::thread update(update_db);
   update.detach();
@@ -184,7 +182,7 @@ gui_main::~gui_main(){
 
 void gui_main::on_add_clicked(){
  
-  feed_parser feed(m_entry.get_text().raw());
+  feed.create(m_entry.get_text().raw());
   int result =  feed.fetch();
 	if(result==0&&m_entry.get_text().raw().length()==0&&0){
 

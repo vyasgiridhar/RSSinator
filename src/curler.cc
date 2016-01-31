@@ -47,6 +47,7 @@ bool download(string url,string file)
 	std::ofstream ofs(file);
 	if(CURLE_OK == curl_read(url, ofs))
 	{
+		std::cout<<"Downloaded Image";
 		curl_global_cleanup();
 		return 0;
 	}
