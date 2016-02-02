@@ -18,7 +18,7 @@ NumberWindow::NumberWindow(): box(Gtk::ORIENTATION_HORIZONTAL),button("Enter")
     box.pack_start(entry,Gtk::PACK_EXPAND_WIDGET);
     box.pack_start(button,Gtk::PACK_SHRINK);
     this->add(box);
-    button.signal_clicked().connect( sigc::mem_fun(*this,&NumberWindow::on_add_clicked) );  
+    button.signal_clicked().connect( sigc::mem_fun(*this,&NumberWindow::on_add_clicked) );
     this->show_all_children();
 }
 
@@ -54,21 +54,21 @@ gui_main::gui_main()
   m_box(Gtk::ORIENTATION_VERTICAL),
   m_addbox(Gtk::ORIENTATION_HORIZONTAL),
   button("Add"),
-  quit("Quit")	
- 
+  quit("Quit")
+
 {
   set_title("Your RSS's");
   set_border_width(5);
   set_default_size(1270,768);
   maximize();
   check_first_run();
-  Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default(); 
-  int width = screen->get_width(); 
+  Glib::RefPtr<Gdk::Screen> screen = Gdk::Screen::get_default();
+  int width = screen->get_width();
   m_VPaned.set_position(width/2);
 
   WebKitSettings *settings = webkit_settings_new();
-  webkit_settings_set_enable_smooth_scrolling(settings,true); 
-  web_view = WEBKIT_WEB_VIEW( webkit_web_view_new_with_settings(settings) ); 
+  webkit_settings_set_enable_smooth_scrolling(settings,true);
+  web_view = WEBKIT_WEB_VIEW( webkit_web_view_new_with_settings(settings) );
   webview = Glib::wrap( GTK_WIDGET( (web_view) ) );
   webkit_web_view_load_uri(web_view,rsslist.get_news_link(0));
 
@@ -96,7 +96,7 @@ gui_main::gui_main()
   Gtk::MenuItem Delete("Delete",true);
   submenuedit.append(Delete);
   Delete.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_action_delete_rss));
-  
+
   Gtk::MenuItem Number("Add Number",true);
   submenuedit.append(Number);
   Number.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_add_number_clicked));
@@ -106,7 +106,7 @@ gui_main::gui_main()
   menubar.append(menu_about);
   Gtk::Menu subaboutmenu;
   menu_about.set_submenu(subaboutmenu);
-  
+
   Gtk::MenuItem about("About",true);
   subaboutmenu.append(about);
   about.signal_activate().connect(sigc::mem_fun(*this,&gui_main::on_action_about));
@@ -114,21 +114,16 @@ gui_main::gui_main()
 ////////////////////////////////////////////////////
 
   button.signal_clicked().connect( sigc::mem_fun(*this,
-              &gui_main::on_add_clicked) );  
+              &gui_main::on_add_clicked) );
   quit.signal_clicked().connect(sigc::mem_fun(*this, &gui_main::on_button_quit) );
   add(m_box);
   show_all();
   show_all_children();
   monitor_signal();
-//  rsslist.Update();
-  check_first_run();
-  std::thread update(update_db);
-  update.detach();
-  my_slot = sigc::bind(sigc::mem_fun(*this,
-              &gui_main::update),1);
-  Glib::signal_timeout().connect(my_slot,5);
+  rsslist.Update();
+  if(check_first_run()){
 
-  
+  }
 }
 void gui_main::on_add_number_clicked(){
 
@@ -151,10 +146,10 @@ void gui_main::monitor_signal(){
 		//current_dir+=".signaled_row";
   		auto dir = Gio::File::create_for_path(current_dir);
  		auto monitor = dir->monitor_directory();
-  
+
   		//std::cout << "Monitoring directory '" << current_dir << "'..."<< std::endl << std::endl;
   		monitor->signal_changed().connect(sigc::mem_fun(*this,&gui_main::on_index_changed));
-  
+
   		//mainloop->run();
 }
 
@@ -181,7 +176,7 @@ gui_main::~gui_main(){
 
 
 void gui_main::on_add_clicked(){
- 
+
   feed.create(m_entry.get_text().raw());
   int result =  feed.fetch();
 	if(result==0&&m_entry.get_text().raw().length()==0&&0){
@@ -189,10 +184,10 @@ void gui_main::on_add_clicked(){
 	  	Gtk::MessageDialog dialog(*this, "Invalid URL");
 	  	dialog.set_secondary_text("The feed entered could not be recogenized");
   	  dialog.run();
-	
+
 	}
 	else{
-		
+
 		Gtk::MessageDialog dialog(*this, "New feed", false /* use_markup */, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_OK_CANCEL);
 		dialog.set_secondary_text("Would you like to add this to your Feeds");
 	    int result = dialog.run();
@@ -211,7 +206,7 @@ void gui_main::on_add_clicked(){
        			f.open(loc,ios::in|ios::binary);
        			if(!f){
        			while(f.read((char*)&fd,sizeof(fd))){
-       				
+
        				if(!strcmp(fd.get_url().c_str(),m_entry.get_text().data())){
        						  	cout<<"showing Dialogue";
        						  	Gtk::MessageDialog di(*this, "Url Present");
@@ -225,7 +220,7 @@ void gui_main::on_add_clicked(){
        			if(flag == 0){
        				f.open(loc,ios::app|ios::binary);
        				feed.parse();
-       				feed.fetch_data();	
+       				feed.fetch_data();
        				f.write((char*)&feed,sizeof(feed));
        				f.close();
        				a:
@@ -239,19 +234,19 @@ void gui_main::on_add_clicked(){
   	 						case(Gtk::RESPONSE_CANCEL):
   	 							break;
   	 					}
-       					
+
        				}
        				else{
-       					rsslist.Update();	
+       					rsslist.Update();
        				}
-            rsslist.Update();  
+            rsslist.Update();
 
        			}
 
       			break;
     		    }
     			case(Gtk::RESPONSE_CANCEL):
-    			{	
+    			{
     			std::cout << "Cancel clicked." << std::endl;
     			break;
     			}
@@ -266,27 +261,17 @@ void gui_main::on_add_clicked(){
 
 
 void gui_main::on_button_quit(){
-  
+
 	hide();
 	mainloop->quit();
 }
 
 
-void gui_main::check_first_run(){
-	ifstream f;
+bool gui_main::check_first_run(){
 	char w[100],cwd[100];
 	getcwd(cwd,100);
 	sprintf(w,"%s/res/database.data",cwd);
-	f.open(w,ios::binary);
-	f.seekg(0,ios::end);
-	if(f.tellg()==0){	
-		f.close();
-		Gtk::MessageDialog dialogue(*this,"No feeds present");
-		dialogue.set_secondary_text("Add a new feed to load the news");
-  		dialogue.run();
-      dialogue.hide();  
-    }
-    f.close();
+return false;
 }
 
 void gui_main::on_action_delete_rss(){

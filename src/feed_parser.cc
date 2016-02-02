@@ -5,9 +5,9 @@ bool feed_parser::fetch(){
 		cout<<"@JSON";
 		if(json.has<Object>("rss"))
 			return true;
-		else 
+		else
 			return false;
-return false;		
+return false;
 }
 
 feed_parser::feed_parser(string url){
@@ -15,7 +15,7 @@ feed_parser::feed_parser(string url){
 }
 
 bool feed_parser::parse(){
-	try{	
+	try{
 
 			title = json.get<Object>("rss").get<Object>("channel").get<String>("title");
 			link =  json.get<Object>("rss").get<Object>("channel").get<String>("link");
@@ -33,7 +33,7 @@ bool feed_parser::parse(){
    				 }
    				 News.img_path[News.num_item] = item->get<Object>("thumbnail").get<String>("@url");
    				 News.link[News.num_item] = item->get<String>("link");
-			}	
+			}
 		}catch(...){
 			return false;
 		}
@@ -49,14 +49,18 @@ bool feed_parser::fetch_data(){
    			 	Glib::RefPtr<Gdk::Pixbuf> temp ;
    			 	temp = Gdk::Pixbuf::create_from_file(News.title[News.num_item]+".jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
    	         	News.image[News.num_item] = temp;
- 	
+
  	    }catch(...){
  	    	Glib::RefPtr<Gdk::Pixbuf> temp ;
    			temp = Gdk::Pixbuf::create_from_file(".backup.jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
    	       	News.image[News.num_item] = temp;
  	    }
 		remove(((News.title[News.num_item]+".jpg")).c_str());
-		ofstream of("database.dat",ios::binary);
+
+		char* loc,*cwd;
+		getcwd(cwd,100);
+  	sprintf(loc,"%s/res/database.data",cwd);		
+		ofstream of(loc,ios::binary);
 		cout<<this->title;
 		of.write((char*)this,sizeof(*this));
   		of.close();

@@ -39,7 +39,7 @@ protected:
   void on_index_changed(const Glib::RefPtr<Gio::File>& file, const Glib::RefPtr<Gio::File>& other_file, Gio::FileMonitorEvent event);
   void on_add_clicked();
   void on_button_quit();
-  void check_first_run();
+  bool check_first_run();
   void create_menu();
   void on_action_delete_rss();
   void on_action_about();
