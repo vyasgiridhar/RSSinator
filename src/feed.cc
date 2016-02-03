@@ -1,5 +1,5 @@
 
-bool feed_parser::fetch(){
+bool feed::fetch(){
 
 		json.parse(download(url));
 		cout<<"@JSON";
@@ -10,11 +10,11 @@ bool feed_parser::fetch(){
 return false;
 }
 
-feed_parser::feed_parser(string url){
+feed::feed(string url){
 		this->url = url;
 }
 
-bool feed_parser::parse(){
+bool feed::parse(){
 	try{
 
 			title = json.get<Object>("rss").get<Object>("channel").get<String>("title");
@@ -41,7 +41,7 @@ bool feed_parser::parse(){
 return true;
 }
 
-bool feed_parser::fetch_data(){
+bool feed::fetch_data(){
 	cout<<"Fetching images baby";
 	try{
 		download(News.title[News.num_item]+".jpg",News.img_path[News.num_item]);
@@ -59,7 +59,7 @@ bool feed_parser::fetch_data(){
 
 		char* loc,*cwd;
 		getcwd(cwd,100);
-  	sprintf(loc,"%s/res/database.data",cwd);		
+  	sprintf(loc,"%s/res/database.data",cwd);
 		ofstream of(loc,ios::binary);
 		cout<<this->title;
 		of.write((char*)this,sizeof(*this));

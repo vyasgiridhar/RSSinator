@@ -12,7 +12,7 @@
 using namespace std;
 using namespace jsonxx;
 
-class feed_parser{
+class feed{
 
 	Object json;
 	string url,title,link,desc,date,logo;
@@ -22,15 +22,15 @@ class feed_parser{
 
 	public:
 
-		feed_parser(string url);
-		
+		feed(string url);
+
 		void create(string url){
-			this->url = url;	
+			this->url = url;
 		}
-		feed_parser(){}
+		feed(){}
 		string get_topic(){
 			return title;
-		}		
+		}
 		bool fetch();
 		bool fetch_data();
 		bool parse();
@@ -40,7 +40,7 @@ class feed_parser{
 		string get_item_title(int index){
 			return News.title[index];
 		}
-		
+
 		Glib::RefPtr<Gdk::Pixbuf> get_item_img(int index){
 			return News.image[index];
 		}
@@ -48,11 +48,11 @@ class feed_parser{
 		string get_item_link(int index){
 			return News.link[index];
 		}
-		
+
 		int get_total(){
 			return News.num_item;
 		}
-		
+
 		struct news get_news(){
 			return News;
 		}
