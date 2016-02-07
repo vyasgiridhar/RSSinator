@@ -57,4 +57,6 @@ class feed{
 			return News;
 		}
 
+		
+
 };
