@@ -177,8 +177,8 @@ gui_main::~gui_main(){
 
 void gui_main::on_add_clicked(){
 
-  feed.create(m_entry.get_text().raw());
-  int result =  feed.fetch();
+  Feed.create(m_entry.get_text().raw());
+  int result =  Feed.fetch();
 	if(result==0&&m_entry.get_text().raw().length()==0&&0){
 
 	  	Gtk::MessageDialog dialog(*this, "Invalid URL");
@@ -199,7 +199,7 @@ void gui_main::on_add_clicked(){
     			char c[100],loc[100];
     			int count =0;
     			getcwd(c,100);
-    			feed_parser fd;
+    			feed  fd;
     			sprintf(loc,"%s/res/database.data",c);
       			fstream f;
       			int flag = 0;
@@ -219,9 +219,9 @@ void gui_main::on_add_clicked(){
        			f.close();
        			if(flag == 0){
        				f.open(loc,ios::app|ios::binary);
-       				feed.parse();
-       				feed.fetch_data();
-       				f.write((char*)&feed,sizeof(feed));
+       				Feed.parse();
+       				Feed.fetch_data();
+       				f.write((char*)&Feed,sizeof(Feed));
        				f.close();
        				a:
        				if(!download("www.google.com").length()){

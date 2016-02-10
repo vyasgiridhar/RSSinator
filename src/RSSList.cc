@@ -57,7 +57,7 @@ void RSSList::Update(){
 
 
   Glib::RefPtr<Gdk::Pixbuf> temp;
-  feed_parser fd;
+  feed fd;
   char loc[100],u[100];
   sprintf(loc,"%s/res/database.data",cwd);
   cout<<loc;
