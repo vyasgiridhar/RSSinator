@@ -44,19 +44,23 @@ bool DB_Helper::Create_db(feed f){
      }
 return true;
 }
+
 static news pushintofeed(void *NotUsed, int argc, char **argv, char **azColName){
 
+     char *cwd;
+     getcwd(cwd,100);
      int i;
      news.num_item = atoi(argv[0]);
      news.title[news.num_item] = string(argv[1]);
      news.link[news.num_item] = string(argv[2]);
-     Glib::RefPtr<Gdk::Pixbuf> temp = Gdk::Pixbuf::create_from_file(news.+".jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
+     Glib::RefPtr<Gdk::Pixbuf> temp = Gdk::Pixbuf::create_from_file(string(cwd)+news.num_item+".jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
      ofstream f("d.d",ios::app);
      f.write((char*)&temp,sizeof(temp));
      f.close();
      printf("\n");
      return 0;
 }
+
 feed DB_Helper::getfeeds(){
   sql = "SELECT * FROM FEED";
   int rc = sqlite3_exec(db, sql.c_str(), pushintofeed, 0, &zErrMsg);
