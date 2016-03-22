@@ -12,14 +12,14 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
    return 0;
 }
 
-bool DB_Helper::Create_db(feed f){
+bool DB_Helper::Create_db(string x){
     sqlite3 *db;
     char *zErrMsg = 0;
     int  rc;
-
+    this->path_to_file = x;
 
     /* Open database */
-    rc = sqlite3_open("News.db", &db);
+    rc = sqlite3_open(path_to_file+"News.db", &db);
     if( rc ){
        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
        exit(0);
@@ -28,10 +28,10 @@ bool DB_Helper::Create_db(feed f){
     }
 
     sql = "CREATE TABLE FEED("  \
-       "ID NUMBER PRIMARY KEY     NOT NULL," \
-       "TITLE           CHAR(50)    NOT NULL," \
+       "ID NUMBER     NOT NULL," \
+       "TITLE           CHAR(50) PRIMARY KEY   NOT NULL," \
        "LINK           CHAR(50)     NOT NULL," \
-       "FEEDNAME    CHAR(50)");
+       "FEEDNAME    CHAR(50))";
 
      rc = sqlite3_exec(db, sql.c_str(), callback, 0, &zErrMsg);
      if( rc != SQLITE_OK ){
@@ -45,7 +45,7 @@ bool DB_Helper::Create_db(feed f){
 return true;
 }
 
-static news pushintofeed(void *NotUsed, int argc, char **argv, char **azColName){
+static int DB_Helper::push_into_news(void *NotUsed, int argc, char **argv, char **azColName){
 
      char *cwd;
      getcwd(cwd,100);
@@ -53,8 +53,7 @@ static news pushintofeed(void *NotUsed, int argc, char **argv, char **azColName)
      news.num_item = atoi(argv[0]);
      news.title[news.num_item] = string(argv[1]);
      news.link[news.num_item] = string(argv[2]);
-     Glib::RefPtr<Gdk::Pixbuf> temp = Gdk::Pixbuf::create_from_file(string(cwd)+news.num_item+".jpg")->scale_simple(100, 100, Gdk::INTERP_BILINEAR);
-     ofstream f("d.d",ios::app);
+     ofstream f(path_to_file+"d.d",ios::app);
      f.write((char*)&temp,sizeof(temp));
      f.close();
      printf("\n");
@@ -63,7 +62,7 @@ static news pushintofeed(void *NotUsed, int argc, char **argv, char **azColName)
 
 feed DB_Helper::getfeeds(){
   sql = "SELECT * FROM FEED";
-  int rc = sqlite3_exec(db, sql.c_str(), pushintofeed, 0, &zErrMsg);
+  int rc = sqlite3_exec(db, sql.c_str(), DB_Helper::pushintofeed, 0, &zErrMsg);
 
 }
 
