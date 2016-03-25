@@ -6,6 +6,7 @@ class DB_Helper{
   news News;
   string path_to_file;
 public:
+  bool Create_title_db();
   bool Create_db();
   void getfeeds();
   string getfeedtopics();

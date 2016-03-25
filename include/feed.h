@@ -23,7 +23,9 @@ class feed{
 	public:
 
 		feed(string url);
-
+		feed(struct news n){
+			this->News = n;
+		}
 		void create(string url){
 			this->url = url;
 		}
@@ -57,6 +59,6 @@ class feed{
 			return News;
 		}
 
-		
+
 
 };
